@@ -34,6 +34,22 @@ CANONICAL_SEEDS: Dict[str, Dict[str, str]] = {
         "iast": "karmaṇyevādhikāraste mā phaleṣu kadācana | mā karmaphalaheturbhūrmā te saṅgo'stvakarmaṇi ||",
         "translation": "You have a right only to work, never to its fruits; let not the fruits of action be your motive, nor let your attachment be to inaction."
     },
+    "BG_2_48": {
+        "text": "Bhagavad Gītā",
+        "chapter": "2",
+        "verse": "48",
+        "sanskrit": "योगस्थः कुरु कर्माणि सङ्गं त्यक्त्वा धनञ्जय। सिद्ध्यसिद्ध्योः समो भूत्वा समत्वं योग उच्यते॥",
+        "iast": "yogasthaḥ kuru karmāṇi saṅgaṃ tyaktvā dhanañjaya | siddhyasiddhyoḥ samo bhūtvā samatvaṃ yoga ucyate ||",
+        "translation": "Perform action, O Dhananjaya, being steadfast in Yoga, abandoning attachment, and balanced in success and failure. Equanimity is called Yoga."
+    },
+    "BG_2_71": {
+        "text": "Bhagavad Gītā",
+        "chapter": "2",
+        "verse": "71",
+        "sanskrit": "विहाय कामान्यः सर्वान्पुमांश्चरति निःस्पृहः। निर्ममो निरहङ्कारः स शान्तिमधिगच्छति॥",
+        "iast": "vihāya kāmānyaḥ sarvān pumāṃścarati niḥspṛhaḥ | nirmamo nirahaṅkāraḥ sa śāntimadhigacchati ||",
+        "translation": "That person who, abandoning all desires, moves about free from longing, without sense of mine and free from egoism, attains peace."
+    },
     "ISHA_1": {
         "text": "Īśā Upaniṣad",
         "chapter": "1",
@@ -41,6 +57,14 @@ CANONICAL_SEEDS: Dict[str, Dict[str, str]] = {
         "sanskrit": "ॐ ईशा वास्यमिदं सर्वं यत्किञ्च जगत्यां जगत्। तेन त्यक्तेन भुञ्जीथा मा गृधः कस्यस्विद्धनम्॥",
         "iast": "oṃ īśā vāsyamidaṃ sarvaṃ yatkiñca jagatyāṃ jagat | tena tyaktena bhuñjīthā mā gṛdhaḥ kasyasviddhanam ||",
         "translation": "All this, whatsoever moves in this moving world, is enveloped by the Lord. By renouncing that, find joy; do not covet anyone's wealth."
+    },
+    "ISHA_2": {
+        "text": "Īśā Upaniṣad",
+        "chapter": "1",
+        "verse": "2",
+        "sanskrit": "कुर्वन्नेवेह कर्माणि जिजीविषेच्छतं समाः। एवं त्वयि नान्यथेतोऽस्ति न कर्म लिप्यते नरे॥",
+        "iast": "kurvanneveha karmāṇi jijīviṣecchataṃ samāḥ | evaṃ tvayi nānyatheto'sti na karma lipyate nare ||",
+        "translation": "Doing work verily in this world should one wish to live a hundred years. Thus in you, and not otherwise, action does not cling to man."
     }
 }
 

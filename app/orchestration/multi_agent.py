@@ -25,6 +25,9 @@ from app.orchestration.formatter import MasterResponseSchema
 from app.multilingual.glossary import CORE_GLOSSARY
 
 
+import time
+
+
 class AgentHandoffEnvelope(BaseModel):
     query: str
     learner_mode: TeachingMode = TeachingMode.STUDENT
@@ -33,6 +36,7 @@ class AgentHandoffEnvelope(BaseModel):
     verification_notes: Optional[str] = None
     pre_answer_review: Optional[PreAnswerFourRoleCheck] = None
     final_response: Optional[MasterResponseSchema] = None
+    latency_ms: float = 0.0
 
 
 class FactCheckerAgent:
@@ -63,6 +67,7 @@ class MasterOrchestrator:
         self.retriever = retriever or HybridRetriever()
 
     def process_query(self, query: str, mode: TeachingMode = TeachingMode.STUDENT) -> MasterResponseSchema:
+        start_time = time.perf_counter()
         envelope = AgentHandoffEnvelope(query=query, learner_mode=mode)
 
         # 1. Retriever-agent lookup
@@ -138,6 +143,7 @@ class MasterOrchestrator:
             is_verse_verified=envelope.fact_checker_passed,
             has_epistemic_labels=True
         )
+        envelope.latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
         envelope.pre_answer_review = four_role_check
         envelope.final_response = response
 

@@ -34,7 +34,22 @@ retriever.add_verse(
         sanskrit_deva="कर्मण्येवाधिकारस्ते मा फलेषु कदाचन। मा कर्मफलहेतुर्भूर्मा ते सङ्गोऽस्त्वकर्मणि॥",
         iast="karmaṇyevādhikāraste mā phaleṣu kadācana | mā karmaphalaheturbhūrmā te saṅgo'stvakarmaṇi ||",
         padaccheda=["karmaṇi", "eva", "adhikāraḥ", "te", "mā", "phaleṣu", "kadācana"],
-        meaning_summary="You have right only to work, never to its fruits; let not fruits be your motive, nor attachment be to inaction."
+        meaning_summary="You have right only to work, never to its fruits; let not fruits be your motive, nor attachment be to inaction.",
+        commentary_pointers=["Advaita (Śaṅkarācārya)", "Viśiṣṭādvaita (Rāmānujācārya)", "Dvaita (Madhvācārya)"]
+    )
+)
+retriever.add_verse(
+    VerseChunk(
+        chunk_id="CHK_BG_2_48",
+        text_id="BG",
+        chapter="2",
+        verse="48",
+        canonical_id="BG_2_48",
+        sanskrit_deva="योगस्थः कुरु कर्माणि सङ्गं त्यक्त्वा धनञ्जय। सिद्ध्यसिद्ध्योः समो भूत्वा समत्वं योग उच्यते॥",
+        iast="yogasthaḥ kuru karmāṇi saṅgaṃ tyaktvā dhanañjaya | siddhyasiddhyoḥ samo bhūtvā samatvaṃ yoga ucyate ||",
+        padaccheda=["yogasthaḥ", "kuru", "karmāṇi", "saṅgam", "tyaktvā", "dhanañjaya"],
+        meaning_summary="Perform action being steadfast in Yoga, abandoning attachment, balanced in success and failure. Equanimity is called Yoga.",
+        commentary_pointers=["Advaita (Śaṅkarācārya)", "Viśiṣṭādvaita (Rāmānujācārya)"]
     )
 )
 orchestrator = MasterOrchestrator(retriever=retriever)

@@ -72,6 +72,11 @@ class EvidenceProfile(BaseModel):
         tv = textual_map.get(self.textual_confidence, 0.5)
         co = level_map.get(self.independent_corroboration, 0.5)
 
+        # Non-compensatory veto gate (§17 hardening):
+        # If primary textual verification fails, popularity or publisher prestige cannot compensate for fabricated text.
+        if self.textual_confidence == TextualConfidence.UNVERIFIABLE or tv <= 0.0:
+            return 0.0
+
         score = (0.30 * sq) + (0.25 * tv) + (0.20 * co) + (0.15 * extraction_quality) + (0.10 * interpretive_consistency)
         return round(score, 4)
 

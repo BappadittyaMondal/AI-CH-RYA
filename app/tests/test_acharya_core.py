@@ -136,6 +136,8 @@ def test_section_9_sanskrit_engine_and_transliteration():
     analysis = SanskritEngine.analyze_verse(verse_half)
     assert analysis.chandas is not None
     assert "Anuṣṭubh" in analysis.chandas.name
+    assert analysis.chandas.total_matras >= 20  # Metric quantitative validation (§9)
+    assert analysis.chandas.is_metric_valid is True
 
     # OCR normalization separation
     raw_ocr = "कर्मण्येवाधिकारस्ते | मा फलेषु कदाचन ||"
@@ -194,6 +196,16 @@ def test_section_11_hybrid_rag():
     assert results[0].match_type == "EXACT_VERSE_ID"
     assert results[0].chunk.canonical_id == "BG_2_47"
     assert results[0].state_rank == 1
+
+    # Commentary Intent classification and affinity verification (§4, §11, §12)
+    comm_query = "What is Śaṅkara's commentary on Gītā 2.47?"
+    intent, target = retriever.classify_query_intent(comm_query)
+    assert intent.value == "COMMENTARY_INTENT"
+    assert "Śaṅkarācārya" in target
+
+    comm_results = retriever.search(comm_query)
+    assert len(comm_results) == 1
+    assert comm_results[0].query_intent.value == "COMMENTARY_INTENT"
 
 
 def test_section_12_commentary_comparison_neutrality():
@@ -256,6 +268,15 @@ def test_section_17_evidence_profile():
     # Internal score calculation
     score = prof.calculate_internal_triage_score()
     assert 0.8 <= score <= 1.0
+
+    # Veto gate verification (§17 hardening): UNVERIFIABLE strictly collapses score to 0.0
+    prof_unverified = EvidenceProfile(
+        textual_confidence=TextualConfidence.UNVERIFIABLE,
+        source_quality=QualitativeLevel.HIGH,
+        independent_corroboration=QualitativeLevel.HIGH,
+        historical_certainty=HistoricalCertainty.ESTABLISHED
+    )
+    assert prof_unverified.calculate_internal_triage_score() == 0.0
 
 
 def test_section_18_64_kala():
@@ -487,3 +508,26 @@ def test_section_34_final_response_architecture_17_parts():
     assert "### 13. EVIDENCE STATUS" in md
     assert "### 15. PRACTICAL APPLICATION" in md
     assert "### 16. KEY TAKEAWAYS" in md
+
+
+def test_database_schema_and_ddl():
+    """Validates persistent database schema DDL generation and SQLite integrity (§4, §11, §26)."""
+    from app.core.db_schema import generate_ddl, init_sqlite_memory_db
+
+    pg_ddl = generate_ddl("postgresql")
+    assert "CREATE EXTENSION IF NOT EXISTS \"vector\"" in pg_ddl
+    assert "CREATE TABLE IF NOT EXISTS canonical_texts" in pg_ddl
+    assert "CREATE TABLE IF NOT EXISTS verses" in pg_ddl
+
+    # In-memory SQLite initialization validation
+    conn = init_sqlite_memory_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = [row[0] for row in cursor.fetchall()]
+    conn.close()
+
+    assert "canonical_texts" in tables
+    assert "verses" in tables
+    assert "commentaries" in tables
+    assert "atomic_claims" in tables
+    assert "audit_events" in tables
