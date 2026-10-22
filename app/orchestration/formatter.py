@@ -27,10 +27,26 @@ class MasterResponseSchema(BaseModel):
     practical_application: str
     key_takeaways: List[str] = Field(default_factory=list)
     optional_revision_quiz: Optional[str] = None
+    seeker_action_summary: Optional[str] = None
+    visual_forensic_card: Optional[str] = None
+    timeline_diff_diagram: Optional[str] = None
 
     def render_markdown(self) -> str:
-        """Assembles structured markdown output adhering to §34."""
-        sections = [
+        """Assembles structured markdown output adhering to §34 with optional visual cards."""
+        sections = []
+
+        if self.seeker_action_summary:
+            sections.append(
+                f"> [!IMPORTANT]\n> **SEEKER ACTION & CLARITY SUMMARY**\n> {self.seeker_action_summary}\n"
+            )
+
+        if self.visual_forensic_card:
+            sections.append(f"{self.visual_forensic_card}\n")
+
+        if self.timeline_diff_diagram:
+            sections.append(f"{self.timeline_diff_diagram}\n")
+
+        sections.extend([
             f"### 1. DIRECT ANSWER\n{self.direct_answer}\n",
             f"### 2. SOURCE / TEXT\n{self.source_text}\n",
             f"### 3. ORIGINAL SANSKRIT\n{self.original_sanskrit}\n",
@@ -41,7 +57,7 @@ class MasterResponseSchema(BaseModel):
             f"### 8. ENGLISH EXPLANATION\n{self.english_explanation}\n",
             f"### 9. CONTEXT & BACKGROUND\n{self.context}\n",
             f"### 10. TRADITIONAL / COMMENTARIAL INTERPRETATIONS\n{self.traditional_interpretations}\n",
-        ]
+        ])
 
         if self.scholarly_historical_view:
             sections.append(f"### 11. SCHOLARLY & HISTORICAL VIEW\n{self.scholarly_historical_view}\n")

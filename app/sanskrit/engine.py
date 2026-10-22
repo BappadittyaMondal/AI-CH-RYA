@@ -258,3 +258,11 @@ class SanskritEngine:
             "normalized_ocr": normalized,
             "was_modified": raw_text != normalized
         }
+
+# Re-export phonetics engine for unified computational Sanskrit access
+from app.sanskrit.phonetics_engine import (
+    PaninianPhoneticsEngine,
+    NiroshthyaAuditResult,
+    CitraKavyaAuditResult,
+    UccaranaSthana
+)

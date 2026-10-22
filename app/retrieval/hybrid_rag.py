@@ -24,6 +24,9 @@ class QueryIntent(str, Enum):
     COMMENTARY_INTENT = "COMMENTARY_INTENT"
     PHILOSOPHICAL_INTENT = "PHILOSOPHICAL_INTENT"
     HISTORICAL_INTENT = "HISTORICAL_INTENT"
+    CIVILIZATION_INTENT = "CIVILIZATION_INTENT"
+    CULTURE_INTENT = "CULTURE_INTENT"
+    ARBITRATION_INTENT = "ARBITRATION_INTENT"
     GENERAL_INTENT = "GENERAL_INTENT"
 
 
@@ -115,6 +118,18 @@ class HybridRetriever:
         for kw, lineage in commentary_keywords.items():
             if kw in q_lower:
                 return QueryIntent.COMMENTARY_INTENT, lineage
+
+        # Arbitration of conflicting claims / timelines
+        if any(w in q_lower for w in ["timeline", "nilesh oak", "dating war", "war date", "5561", "12209", "3102", "closer to reality", "opposing verdict", "which answer is right"]):
+            return QueryIntent.ARBITRATION_INTENT, None
+
+        # Civilizational continuum, geography, material science, inscriptions
+        if any(c in q_lower for c in ["sarasvati", "ksetra", "janapada", "epigraph", "aihole", "rudradaman", "chola", "sreni", "guild", "dharampal", "wootz", "zawar", "kallanai", "metallurgy", "inscriptions"]):
+            return QueryIntent.CIVILIZATION_INTENT, None
+
+        # Living culture, pancanga, samskaras, temple ecosystem, lokacara
+        if any(k in q_lower for k in ["pancanga", "tithi", "nakshatra", "samskara", "upanayana", "vivaha", "antyesti", "garbhadhana", "mandira", "temple ecosystem", "brihadisvara", "lokacara", "desacara", "festival", "ritu"]):
+            return QueryIntent.CULTURE_INTENT, None
 
         if any(h in q_lower for h in ["date", "dating", "archaeology", "historical", "epigraphy", "manuscript", "strata"]):
             return QueryIntent.HISTORICAL_INTENT, None

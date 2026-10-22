@@ -38,8 +38,38 @@ class YouTubeContributionReport(BaseModel):
     conflicts_detected: List[str] = Field(default_factory=list)
 
 
+import hashlib
+
+
+class ASRPhoneticNormalizer:
+    """Normalizes phonetic drift and ASR speech-to-text distortions for Indic and classical terms."""
+    _REPLACEMENTS = [
+        (r"\bpanch\s*sakha\b", "Pañcasakhā"),
+        (r"\bachutanand\b", "Achyutānanda"),
+        (r"\bachyutanand\b", "Achyutānanda"),
+        (r"\bneelam\s*chakra\b", "Nīlacakra"),
+        (r"\bneelachakra\b", "Nīlacakra"),
+        (r"\bmadala\s*panji\b", "Mādaḷā Pāñji"),
+        (r"\byug\s*sandhi\b", "Yuga Sandhi"),
+        (r"\byugsanthi\b", "Yuga Sandhi"),
+        (r"\bsuryasidhanta\b", "Sūrya Siddhānta"),
+        (r"\bsurya\s*sidhant\b", "Sūrya Siddhānta"),
+        (r"\bhister\b", "Hister (Danube)"),
+        (r"\bbhavishya\s*malika\b", "Bhavishya Mālikā"),
+    ]
+
+    @classmethod
+    def normalize_text(cls, raw_text: str) -> str:
+        text = raw_text
+        for pattern, replacement in cls._REPLACEMENTS:
+            text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
+        return text
+
+
 class YouTubeEngine:
     """Processes YouTube links under strict evidence transparency guidelines."""
+
+    _CACHE: Dict[str, YouTubeContributionReport] = {}
 
     @staticmethod
     def extract_video_id(url: str) -> Optional[str]:
@@ -61,6 +91,10 @@ class YouTubeEngine:
         provided_transcript: Optional[str] = None,
         available_level: YouTubeEvidenceLevel = YouTubeEvidenceLevel.METADATA_ONLY
     ) -> YouTubeContributionReport:
+        cache_key = hashlib.sha256(url.encode()).hexdigest()
+        if not provided_transcript and cache_key in cls._CACHE:
+            return cls._CACHE[cache_key]
+
         video_id = cls.extract_video_id(url) or "unknown_video"
 
         # Explicit disclosure rule (§13a.8)
@@ -72,8 +106,9 @@ class YouTubeEngine:
 
         extracted_claims: List[AtomicClaim] = []
         if provided_transcript:
-            lines = [l.strip() for l in provided_transcript.split("\n") if l.strip()]
-            for idx, line in enumerate(lines[:10]):
+            normalized_txt = ASRPhoneticNormalizer.normalize_text(provided_transcript)
+            lines = [l.strip() for l in normalized_txt.split("\n") if l.strip()]
+            for idx, line in enumerate(lines[:15]):
                 extracted_claims.append(
                     AtomicClaim(
                         claim_text=line,
@@ -85,10 +120,12 @@ class YouTubeEngine:
                     )
                 )
 
-        return YouTubeContributionReport(
+        report = YouTubeContributionReport(
             video_id=video_id,
             url=url,
             evidence_level_available=available_level,
             evidence_disclosure=disclosure,
             claims_extracted=extracted_claims
         )
+        cls._CACHE[cache_key] = report
+        return report
